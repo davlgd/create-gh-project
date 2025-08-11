@@ -1,0 +1,10 @@
+{
+  "exclude": ["node_modules", "dist", "build", "coverage", ".git", "src/templates/license.ts"],
+  "disable": {
+    "end-of-line": false,
+    "insert-final-newline": false,
+    "trim-trailing-whitespace": false,
+    "indent-style": false,
+    "indent-size": false
+  }
+}

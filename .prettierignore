@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+bun.lock
+
+# Build output
+dist/
+coverage/
+
+# Generated files
+*.log
+*.tmp
+
+# Test output
+test-output*/
+
+# OS files
+.DS_Store
+Thumbs.db
