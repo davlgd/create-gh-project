@@ -97,7 +97,7 @@ describe('CLI Integration', () => {
 
     expect(exitCode).toBe(0);
     expect(stdout).toContain('📜 License: MIT');
-    expect(stdout).toContain('Project initialized successfully!');
+    expect(stdout).toContain('Project structure created successfully!');
 
     // Verify files were created
     expect(existsSync(join(TEST_OUTPUT_DIR, 'README.md'))).toBe(true);
@@ -129,7 +129,7 @@ describe('CLI Integration', () => {
 
     expect(exitCode).toBe(0);
     expect(stdout).toContain('📜 License: Apache-2.0');
-    expect(stdout).toContain('Project initialized successfully!');
+    expect(stdout).toContain('Project structure created successfully!');
   });
 
   it('should create project structure correctly', async () => {
@@ -218,7 +218,7 @@ describe('CLI Integration', () => {
     const stdout = await new Response(proc.stdout).text();
 
     expect(exitCode).toBe(0);
-    expect(stdout).toContain('Project initialized successfully!');
+    expect(stdout).toContain('Project structure created successfully!');
 
     // Verify files were created
     expect(existsSync(join(TEST_OUTPUT_DIR, 'README.md'))).toBe(true);
@@ -271,7 +271,7 @@ describe('CLI Integration', () => {
     const stdout = await new Response(proc.stdout).text();
 
     expect(exitCode).toBe(0);
-    expect(stdout).toContain('Project initialized successfully!');
+    expect(stdout).toContain('Project structure created successfully!');
   });
 
   it('should handle GitHub repository creation errors gracefully', async () => {
