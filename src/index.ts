@@ -13,7 +13,7 @@ const program = new Command();
 program
   .name('create-gh-project')
   .description('🚀 Bootstrap your projects with essential files')
-  .version('0.1.1')
+  .version('0.1.2')
   .argument('[name]', 'Project name', 'new-project')
   .option('-o, --output <directory>', 'Output directory (default: project name)')
   .option('-d, --description <desc>', 'Project description')
@@ -168,7 +168,6 @@ async function main() {
       });
     }
 
-    UILogger.success('\nProject initialized successfully!');
     UILogger.projectComplete();
 
     // Show GitHub success message after project structure, before next steps

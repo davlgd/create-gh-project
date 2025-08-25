@@ -45,7 +45,7 @@ describe('CLI Integration', () => {
     const stdout = await new Response(proc.stdout).text();
 
     expect(exitCode).toBe(0);
-    expect(stdout.trim()).toBe('0.1.1');
+    expect(stdout.trim()).toBe('0.1.2');
   });
 
   it('should reject invalid license', async () => {

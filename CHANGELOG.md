@@ -5,12 +5,34 @@ All notable changes to create-gh-project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2025-08-24
+
+### Fixed
+
+- **User Experience**: Improved message display order
+  - GitHub repository success message now appears after project structure display
+  - Better logical flow: project creation → structure display → GitHub success → next steps
+  - Enhanced user feedback with proper message sequencing
+
+### Changed
+
+- **CLI Documentation**: Corrected npm/bun create syntax
+  - Fixed syntax to `npm create gh-project -- <name> [options]` (proper argument order)
+  - Updated CLI help examples and README documentation
+  - Aligned all documentation with correct package manager usage
+
+### Technical
+
+- Refactored GitHub setup function to return repository URL for better message flow
+- Maintained 100% test coverage (29 tests)
+- No breaking changes - full backward compatibility preserved
+
 ## [0.1.1] - 2025-08-24
 
 ### Fixed
 
 - **SSH Authentication**: Fixed SSH passphrase input for GitHub repository creation
-  - Added interactive mode for `gh repo create` and `git push` commands  
+  - Added interactive mode for `gh repo create` and `git push` commands
   - Enabled stdin inheritance for SSH key authentication prompts
   - Resolved blocking issue for users with SSH key passphrases
 
@@ -18,13 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Better handling of "repository already exists" errors with graceful user messages
   - Proper stderr/stdout stream usage following Unix conventions
   - Removed trailing periods from error messages for better UX
-
-### Changed
-
-- **CLI Documentation**: Updated help examples and documentation
-  - Added proper npm/bun create syntax with "--" separator in help output
-  - Aligned CLI help examples with README documentation
-  - Improved package manager usage clarity
 
 ### Technical
 
