@@ -47,7 +47,7 @@ export async function setupGitHub(config: GitHubConfig) {
             '--source',
             '.',
           ],
-          { cwd: projectPath }
+          { cwd: projectPath, interactive: true }
         );
       } catch (error) {
         if (error instanceof Error && error.message === 'REPOSITORY_EXISTS') {
@@ -64,7 +64,10 @@ export async function setupGitHub(config: GitHubConfig) {
 
       // Push to GitHub
       console.log('🚀 Pushing to GitHub...');
-      await runCommand(['git', 'push', '-u', 'origin', 'main'], { cwd: projectPath });
+      await runCommand(['git', 'push', '-u', 'origin', 'main'], {
+        cwd: projectPath,
+        interactive: true,
+      });
 
       console.log('✅ GitHub repository created and pushed successfully!');
       console.log(
@@ -98,18 +101,41 @@ export async function setupGitHub(config: GitHubConfig) {
   }
 }
 
-async function runCommand(command: string[], options: { cwd?: string } = {}): Promise<string> {
-  const proc = Bun.spawn(command, {
+async function runCommand(
+  command: string[],
+  options: { cwd?: string; interactive?: boolean } = {}
+): Promise<string> {
+  const spawnOptions = {
     cwd: options.cwd || process.cwd(),
-    stdout: 'pipe',
-    stderr: 'pipe',
-  });
+    ...(options.interactive
+      ? {
+          // For interactive commands, inherit stdio to allow keyboard input
+          stdout: 'inherit' as const,
+          stderr: 'inherit' as const,
+          stdin: 'inherit' as const,
+        }
+      : {
+          // For non-interactive commands, pipe output for processing
+          stdout: 'pipe' as const,
+          stderr: 'pipe' as const,
+        }),
+  };
 
+  const proc = Bun.spawn(command, spawnOptions);
   const exitCode = await proc.exited;
 
   if (exitCode !== 0) {
-    const stderr = await new Response(proc.stderr).text();
-    const stdout = await new Response(proc.stdout).text();
+    if (options.interactive) {
+      // For interactive commands, we can't read stderr/stdout since they're inherited
+      // Check for common error patterns based on command and exit code
+      if (command.includes('gh') && command.includes('create')) {
+        throw new Error('REPOSITORY_EXISTS');
+      }
+      throw new Error(`Command failed: ${command.join(' ')}`);
+    }
+
+    const stderr = await new Response(proc.stderr!).text();
+    const stdout = await new Response(proc.stdout!).text();
 
     // Better error handling with specific cases
     if (stderr.includes('Name already exists on this account')) {
@@ -123,7 +149,8 @@ async function runCommand(command: string[], options: { cwd?: string } = {}): Pr
     throw new Error(`Command failed: ${command.join(' ')}\nOutput: ${stdout}\nError: ${stderr}`);
   }
 
-  return await new Response(proc.stdout).text();
+  // For interactive commands, we can't return stdout content
+  return options.interactive ? '' : await new Response(proc.stdout!).text();
 }
 
 async function getGitHubUsername(): Promise<string> {
