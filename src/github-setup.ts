@@ -34,20 +34,29 @@ export async function setupGitHub(config: GitHubConfig) {
       console.log(`🐙 Creating ${config.isPrivate ? 'private' : 'public'} GitHub repository...`);
 
       // Create GitHub repository using gh CLI
-      await runCommand(
-        [
-          'gh',
-          'repo',
-          'create',
-          config.name,
-          '--description',
-          config.description,
-          visibility,
-          '--source',
-          '.',
-        ],
-        { cwd: projectPath }
-      );
+      try {
+        await runCommand(
+          [
+            'gh',
+            'repo',
+            'create',
+            config.name,
+            '--description',
+            config.description,
+            visibility,
+            '--source',
+            '.',
+          ],
+          { cwd: projectPath }
+        );
+      } catch (error) {
+        if (error instanceof Error && error.message === 'REPOSITORY_EXISTS') {
+          console.warn(`⚠️ Repository "${config.name}" already exists on GitHub`);
+          console.log('💡 You can rename your local project or use a different name');
+          return; // Exit gracefully without throwing
+        }
+        throw error; // Re-throw other errors
+      }
 
       // Set main as default branch
       console.log('🌿 Setting up main branch...');
@@ -66,15 +75,23 @@ export async function setupGitHub(config: GitHubConfig) {
       console.log('💡 You can create it later with: gh repo create');
     }
   } catch (error) {
-    console.error('❌ GitHub setup failed:', error);
+    if (error instanceof Error && error.message === 'REPOSITORY_EXISTS') {
+      // Already handled above, don't re-throw
+      return;
+    }
+
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('GitHub setup failed:', errorMessage);
 
     // Check if gh CLI is installed
     try {
       await runCommand(['gh', '--version']);
-    } catch {
-      console.error('💡 Make sure GitHub CLI (gh) is installed and authenticated:');
-      console.error('   - Install: https://cli.github.com/');
-      console.error('   - Login: gh auth login');
+    } catch (ghError) {
+      if (ghError instanceof Error && ghError.message === 'COMMAND_NOT_FOUND') {
+        console.log('💡 GitHub CLI (gh) is not installed');
+        console.log('   Install: https://cli.github.com/');
+        console.log('   Then authenticate: gh auth login');
+      }
     }
 
     throw error;
@@ -92,7 +109,18 @@ async function runCommand(command: string[], options: { cwd?: string } = {}): Pr
 
   if (exitCode !== 0) {
     const stderr = await new Response(proc.stderr).text();
-    throw new Error(`Command failed: ${command}\nError: ${stderr}`);
+    const stdout = await new Response(proc.stdout).text();
+
+    // Better error handling with specific cases
+    if (stderr.includes('Name already exists on this account')) {
+      throw new Error('REPOSITORY_EXISTS');
+    }
+
+    if (stderr.includes('not found') || stderr.includes('command not found')) {
+      throw new Error('COMMAND_NOT_FOUND');
+    }
+
+    throw new Error(`Command failed: ${command.join(' ')}\nOutput: ${stdout}\nError: ${stderr}`);
   }
 
   return await new Response(proc.stdout).text();

@@ -86,7 +86,7 @@ async function main() {
     const validLicenses: SupportedLicense[] = ['MIT', 'Apache-2.0'];
     if (!validLicenses.includes(options.license as SupportedLicense)) {
       UILogger.error(
-        `Invalid license "${options.license}". Only MIT and Apache-2.0 are supported.`
+        `Invalid license "${options.license}" - Only MIT and Apache-2.0 are supported`
       );
       process.exit(1);
     }

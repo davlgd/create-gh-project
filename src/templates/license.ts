@@ -238,5 +238,5 @@ SOFTWARE.
   }
 
   // This should never happen due to validation, but just in case
-  throw new Error(`Unsupported license: ${config.license}. Only MIT and Apache-2.0 are supported.`);
+  throw new Error(`Unsupported license: ${config.license} - Only MIT and Apache-2.0 are supported`);
 }

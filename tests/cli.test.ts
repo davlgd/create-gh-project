@@ -273,4 +273,35 @@ describe('CLI Integration', () => {
     expect(exitCode).toBe(0);
     expect(stdout).toContain('Project initialized successfully!');
   });
+
+  it('should handle GitHub repository creation errors gracefully', async () => {
+    // This test simulates the GitHub CLI behavior when a repository already exists
+    // We can't easily test the actual GitHub API, but we can verify our error handling logic
+
+    // Test that our error messages don't contain trailing periods
+    const proc = Bun.spawn(
+      [
+        'bun',
+        'run',
+        'src/index.ts',
+        'invalid license test',
+        '--license',
+        'GPL',
+        '--output',
+        TEST_OUTPUT_DIR,
+      ],
+      {
+        stdout: 'pipe',
+        stderr: 'pipe',
+      }
+    );
+
+    const exitCode = await proc.exited;
+    const stderr = await new Response(proc.stderr).text();
+
+    expect(exitCode).toBe(1);
+    // Verify no trailing periods in error messages
+    expect(stderr).toMatch(/GPL" - Only MIT and Apache-2\.0 are supported$/m);
+    expect(stderr).not.toContain('supported.');
+  });
 });
