@@ -4,7 +4,7 @@
 
 This project is **create-gh-project**, a CLI tool to bootstrap AI-ready GitHub projects with all essential files and configurations.
 
-**License**: Apache-2.0 | **Author**: davlgd
+**Version**: 0.1.2 | **License**: Apache-2.0 | **Author**: davlgd
 
 ## Core Development Principles
 
@@ -46,10 +46,11 @@ This project is **create-gh-project**, a CLI tool to bootstrap AI-ready GitHub p
 Before any commit or merge:
 
 1. **All tests pass** (`bun run test`)
-2. **Linting passes** (`bun run lint`)
-3. **Type checking passes** (`bun run typecheck`)
-4. **Full CI pipeline** (`bun run ci`)
-5. **Security validation** - no injection vulnerabilities, input validation
+2. **Code formatting** (`bun run format`)
+3. **Linting passes** (`bun run lint`)
+4. **Type checking passes** (`bun run typecheck`)
+5. **Full CI pipeline** (`bun run ci`)
+6. **Security validation** - no injection vulnerabilities, input validation
 
 ### 🛡️ Security Requirements (CRITICAL)
 
@@ -63,11 +64,13 @@ Before any commit or merge:
 
 ### Modular Design
 
-- **src/index.ts** - CLI entry point with Commander.js
+- **src/index.ts** - CLI entry point with Commander.js (positional arguments)
 - **src/services/** - Business logic services (UI, templates, filesystem)
 - **src/templates/** - Template generators for each file type
-- **src/github-setup.ts** - GitHub integration with security
+- **src/github-setup.ts** - GitHub integration with SSH interactive support
+- **src/project-creator.ts** - Project structure orchestration
 - **src/types.ts** - Type definitions and interfaces
+- **.claude/agents/** - Specialized Claude Code agents for quality, docs, releases
 
 ### Template System Philosophy
 
@@ -80,9 +83,10 @@ Before any commit or merge:
 
 ```bash
 bun run dev          # Hot reload development
-bun run test         # Run all tests (25+ tests)
+bun run test         # Run all tests (29+ tests)
 bun run typecheck    # TypeScript validation
 bun run lint         # Code quality check
+bun run format       # Format code with Prettier
 bun run ci           # Complete validation pipeline
 bun run clean        # Clean artifacts and temp files
 ```
@@ -93,8 +97,9 @@ bun run clean        # Clean artifacts and temp files
 
 1. **Write tests first** - Define expected behavior
 2. **Implement with security** - Validate inputs, use safe patterns
-3. **Run full CI** - `bun run ci` must pass
-4. **Update documentation** - README, CLAUDE.md, help text
+3. **Format code** - `bun run format` to apply consistent styling
+4. **Run full CI** - `bun run ci` must pass
+5. **Update documentation** - README, CLAUDE.md, help text
 
 ### Security-First Development
 
@@ -178,7 +183,7 @@ bun run clean        # Clean artifacts and temp files
 
 ### Constraints
 
-- **Minimal dependencies**: Only Commander.js runtime dependency
+- **Minimal dependencies**: Commander.js runtime dependency with essential dev tools (Prettier, ESLint)
 - **Fast execution**: Templates generated in memory, batch file operations
 - **Cross-platform**: Works on macOS, Linux, Windows
 - **Reliability**: Synchronous file operations for consistency
@@ -189,6 +194,26 @@ bun run clean        # Clean artifacts and temp files
 - **Error recovery**: Graceful handling of git/gh CLI failures
 - **User feedback**: Clear progress indicators and next steps
 - **Clean exits**: Proper process.exit() with meaningful codes
+
+## Release History
+
+### v0.1.2 (Current)
+
+- **UX Improvements**: Better message display order and GitHub integration
+- **SSH Support**: Interactive mode for SSH passphrase input
+- **Aesthetic Enhancements**: Improved line breaks and ellipsis characters
+- **Documentation**: Corrected npm/bun create syntax throughout
+
+### v0.1.1
+
+- **SSH Authentication**: Fixed SSH passphrase blocking issues
+- **Error Handling**: Better GitHub repository creation error management
+
+### v0.1.0
+
+- **Initial Release**: Complete CLI tool with project scaffolding
+- **GitHub Integration**: Automated repository creation
+- **AI-Ready Setup**: Claude agents and comprehensive documentation
 
 ---
 
