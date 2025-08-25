@@ -35,8 +35,8 @@ Examples:
   create-gh-project my-project --github
 
   # Using via package managers (recommended)
-  npm create gh-project my-project -- --github --private --license MIT
-  bun create gh-project my-project -- --output ./custom-dir
+  npm create gh-project -- my-project --github --private --license MIT
+  bun create gh-project -- my-project --output ./custom-dir
   `
   );
 
