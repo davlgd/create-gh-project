@@ -34,12 +34,9 @@ Examples:
   # Create with GitHub repository
   create-gh-project my-project --github
 
-  # Create private GitHub repository with custom license
-  create-gh-project my-project --github --private --license MIT
-
-  # Using via package managers (once published)
-  bun create gh-project my-project
-  npm create gh-project my-project
+  # Using via package managers (recommended)
+  npm create gh-project my-project -- --github --private --license MIT
+  bun create gh-project my-project -- --output ./custom-dir
   `
   );
 

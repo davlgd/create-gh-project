@@ -29,13 +29,13 @@ npm create gh-project my-app
 
 ```bash
 # With custom description and MIT license
-npm create gh-project my-app -d "My awesome application" -l MIT
+npm create gh-project my-app -- -d "My awesome application" -l MIT
 
 # Create GitHub repository automatically
-npm create gh-project my-app --github
+npm create gh-project my-app -- --github
 
 # Private GitHub repository
-npm create gh-project my-app --github --private
+npm create gh-project my-app -- --github --private
 ```
 
 ### What You Get
@@ -65,9 +65,10 @@ code .
 ## 📋 Command Reference
 
 ```bash
-npm create gh-project@latest <name> [options]
+npm create gh-project <name> -- [options]
 # or
-bun create gh-project <name> [options]
+bun create gh-project <name> --
+[options]
 
 Arguments:
   name                      Project name (default: "new-project")
