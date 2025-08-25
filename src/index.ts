@@ -13,7 +13,7 @@ const program = new Command();
 program
   .name('create-gh-project')
   .description('🚀 Bootstrap your projects with essential files')
-  .version('0.1.0')
+  .version('0.1.1')
   .argument('[name]', 'Project name', 'new-project')
   .option('-o, --output <directory>', 'Output directory (default: project name)')
   .option('-d, --description <desc>', 'Project description')

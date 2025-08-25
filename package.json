@@ -1,6 +1,6 @@
 {
   "name": "create-gh-project",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "🚀 Bootstrap your projects with all the essential files and configurations",
   "main": "src/index.ts",
   "type": "module",
