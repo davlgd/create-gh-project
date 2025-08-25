@@ -12,18 +12,19 @@ export async function setupGitHub(config: GitHubConfig): Promise<string | null> 
 
   try {
     // Initialize git repository if not already done
-    console.log('🔄 Initializing Git repository...');
+    console.log('🔄 Initializing Git repository…');
     await runCommand(['git', 'init'], { cwd: projectPath });
 
     // Add all files
-    console.log('📦 Adding files to Git...');
+    console.log('📦 Adding files to Git…');
     await runCommand(['git', 'add', '.'], { cwd: projectPath });
 
     // Create initial commit
-    console.log('💾 Creating initial commit...');
+    console.log('💾 Creating initial commit…');
     await runCommand(['git', 'commit', '-m', 'Initial commit by create-gh-project'], {
       cwd: projectPath,
     });
+    console.log();
 
     // Ask user if they want to create GitHub repository
     const shouldCreateRepo = await askUser(`Create GitHub repository "${config.name}"? (y/N): `);
@@ -31,15 +32,15 @@ export async function setupGitHub(config: GitHubConfig): Promise<string | null> 
     if (shouldCreateRepo.toLowerCase() === 'y' || shouldCreateRepo.toLowerCase() === 'yes') {
       const visibility = config.isPrivate ? '--private' : '--public';
 
-      console.log(`🐙 Creating ${config.isPrivate ? 'private' : 'public'} GitHub repository...`);
+      console.log(`🐙 Creating ${config.isPrivate ? 'private' : 'public'} GitHub repository…`);
 
       // Get GitHub username first
-      console.log('👤 Getting GitHub username...');
+      console.log('👤 Getting GitHub username…');
       const username = await getGitHubUsername();
-      
+
       // Create GitHub repository using gh CLI
       try {
-        console.log('🔧 Executing: gh repo create command...');
+        console.log('🔧 Executing: gh repo create command…');
         await runCommand(
           ['gh', 'repo', 'create', config.name, '--description', config.description, visibility],
           { cwd: projectPath, interactive: false }
@@ -47,13 +48,14 @@ export async function setupGitHub(config: GitHubConfig): Promise<string | null> 
         console.log('✅ GitHub repository created successfully');
 
         // Add remote origin
-        console.log('🔗 Adding remote origin...');
+        console.log('🔗 Adding remote origin…');
         await runCommand(
           ['git', 'remote', 'add', 'origin', `https://github.com/${username}/${config.name}.git`],
           { cwd: projectPath }
         );
       } catch (error) {
         if (error instanceof Error && error.message === 'REPOSITORY_EXISTS') {
+          console.log();
           console.warn(`⚠️ Repository "${config.name}" already exists on GitHub`);
           console.log('💡 You can rename your local project or use a different name');
           return null; // Exit gracefully without throwing
@@ -62,11 +64,12 @@ export async function setupGitHub(config: GitHubConfig): Promise<string | null> 
       }
 
       // Set main as default branch
-      console.log('🌿 Setting up main branch...');
+      console.log('🌿 Setting up main branch…');
       await runCommand(['git', 'branch', '-M', 'main'], { cwd: projectPath });
 
       // Push to GitHub
-      console.log('🚀 Pushing to GitHub...');
+      console.log('🚀 Pushing to GitHub…');
+      console.log();
       await runCommand(['git', 'push', '-u', 'origin', 'main'], {
         cwd: projectPath,
         interactive: true,

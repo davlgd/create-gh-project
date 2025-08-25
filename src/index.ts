@@ -135,7 +135,7 @@ async function main() {
     UILogger.startProcess();
 
     // Get author info from GitHub API (slow operation after all validations)
-    UILogger.step('🔍 Getting author information from GitHub...');
+    UILogger.step('🔍 Getting author information from GitHub…');
     const githubInfo = await getGitHubInfo();
 
     UILogger.projectSummary({
@@ -159,7 +159,7 @@ async function main() {
 
     let githubRepoUrl: string | null = null;
     if (options.github) {
-      UILogger.step('\n🐙 Setting up GitHub repository...');
+      UILogger.step('\n🐙 Setting up GitHub repository…');
       githubRepoUrl = await setupGitHub({
         name: projectName,
         description,

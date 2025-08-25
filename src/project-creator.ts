@@ -17,12 +17,12 @@ export async function createProjectStructure(config: ProjectConfig): Promise<voi
   createProjectDirectories(projectPath);
 
   // Step 2: Generate and write all files
-  UILogger.step('📝 Generating core files...');
+  UILogger.step('📝 Generating core files…');
   const allFiles = TemplateGeneratorService.generateAllFiles(config);
   FileSystemService.writeFiles(allFiles);
 
   // Step 3: Create symbolic link for GitHub Copilot
-  UILogger.step('🔗 Creating symbolic link for GitHub Copilot...');
+  UILogger.step('🔗 Creating symbolic link for GitHub Copilot…');
   await createCopilotSymlink(projectPath);
 
   UILogger.success('Project structure created successfully!');

@@ -60,6 +60,7 @@ export class UILogger {
    * Log project summary with files created
    */
   static projectComplete(): void {
+    console.log();
     console.log('📁 Files created:');
     console.log('   ├── README.md          # Project documentation');
     console.log('   ├── LICENSE            # License file');
@@ -95,6 +96,6 @@ export class UILogger {
    * Start process with clear header
    */
   static startProcess(): void {
-    console.log('🚀 Starting project initialization...\n');
+    console.log('🚀 Starting project initialization…\n');
   }
 }
