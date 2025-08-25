@@ -157,9 +157,10 @@ async function main() {
 
     await createProjectStructure(config);
 
+    let githubRepoUrl: string | null = null;
     if (options.github) {
       UILogger.step('\n🐙 Setting up GitHub repository...');
-      await setupGitHub({
+      githubRepoUrl = await setupGitHub({
         name: projectName,
         description,
         isPrivate: options.private,
@@ -169,6 +170,13 @@ async function main() {
 
     UILogger.success('\nProject initialized successfully!');
     UILogger.projectComplete();
+
+    // Show GitHub success message after project structure, before next steps
+    if (githubRepoUrl) {
+      console.log('✅ GitHub repository created and pushed successfully!');
+      console.log(`🌐 Repository URL: ${githubRepoUrl}\n`);
+    }
+
     UILogger.nextSteps(outputDir);
   } catch (error) {
     UILogger.error(`Error: ${error}`);

@@ -7,7 +7,7 @@ export interface GitHubConfig {
   outputDir: string;
 }
 
-export async function setupGitHub(config: GitHubConfig) {
+export async function setupGitHub(config: GitHubConfig): Promise<string | null> {
   const projectPath = config.outputDir;
 
   try {
@@ -33,27 +33,30 @@ export async function setupGitHub(config: GitHubConfig) {
 
       console.log(`🐙 Creating ${config.isPrivate ? 'private' : 'public'} GitHub repository...`);
 
+      // Get GitHub username first
+      console.log('👤 Getting GitHub username...');
+      const username = await getGitHubUsername();
+      
       // Create GitHub repository using gh CLI
       try {
+        console.log('🔧 Executing: gh repo create command...');
         await runCommand(
-          [
-            'gh',
-            'repo',
-            'create',
-            config.name,
-            '--description',
-            config.description,
-            visibility,
-            '--source',
-            '.',
-          ],
-          { cwd: projectPath, interactive: true }
+          ['gh', 'repo', 'create', config.name, '--description', config.description, visibility],
+          { cwd: projectPath, interactive: false }
+        );
+        console.log('✅ GitHub repository created successfully');
+
+        // Add remote origin
+        console.log('🔗 Adding remote origin...');
+        await runCommand(
+          ['git', 'remote', 'add', 'origin', `https://github.com/${username}/${config.name}.git`],
+          { cwd: projectPath }
         );
       } catch (error) {
         if (error instanceof Error && error.message === 'REPOSITORY_EXISTS') {
           console.warn(`⚠️ Repository "${config.name}" already exists on GitHub`);
           console.log('💡 You can rename your local project or use a different name');
-          return; // Exit gracefully without throwing
+          return null; // Exit gracefully without throwing
         }
         throw error; // Re-throw other errors
       }
@@ -69,18 +72,17 @@ export async function setupGitHub(config: GitHubConfig) {
         interactive: true,
       });
 
-      console.log('✅ GitHub repository created and pushed successfully!');
-      console.log(
-        `🌐 Repository URL: https://github.com/${await getGitHubUsername()}/${config.name}`
-      );
+      const repoUrl = `https://github.com/${username}/${config.name}`;
+      return repoUrl;
     } else {
       console.log('ℹ️ Skipping GitHub repository creation');
       console.log('💡 You can create it later with: gh repo create');
+      return null;
     }
   } catch (error) {
     if (error instanceof Error && error.message === 'REPOSITORY_EXISTS') {
       // Already handled above, don't re-throw
-      return;
+      return null;
     }
 
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -171,7 +173,10 @@ async function getGitHubUsername(): Promise<string> {
 function askUser(question: string): Promise<string> {
   return new Promise((resolve) => {
     process.stdout.write(question);
+    process.stdin.setRawMode(false);
+    process.stdin.resume();
     process.stdin.once('data', (data) => {
+      process.stdin.pause();
       resolve(data.toString().trim());
     });
   });
